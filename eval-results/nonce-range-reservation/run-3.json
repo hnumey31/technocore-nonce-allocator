@@ -1,0 +1,25 @@
+{
+  "run": 3,
+  "phase": "restored-green",
+  "command": "python3 -m unittest -v",
+  "exit_code": 0,
+  "elapsed_ms": 652,
+  "repeat_exit_code": 0,
+  "repeat_elapsed_ms": 637,
+  "stdout_stderr_tail": "test_monotonic_per_did_and_room ... ok\ntest_protocol_cap ... ok\ntest_rejects_invalid_range_size_without_creating_state ... ok\ntest_reserves_contiguous_range_before_next_single_nonce ... ok\nRan 4 tests in 0.492s\nOK",
+  "eval_pass": true,
+  "criteria": {
+    "reproducible_two_runs": true,
+    "contiguous_range_demonstrated": true,
+    "did_room_isolation_demonstrated": true,
+    "invalid_counts_rejected_before_state_write": true,
+    "negative_test_failed_on_baseline": true,
+    "code_tests_docs_present": true
+  },
+  "artifacts": [
+    "nonce_allocator.py",
+    "test_nonce_allocator.py",
+    "README.md",
+    "eval-results/nonce-range-reservation/eval.md"
+  ]
+}

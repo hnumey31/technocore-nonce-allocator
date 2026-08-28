@@ -1,0 +1,14 @@
+{
+  "run": 2,
+  "phase": "negative-test-baseline-production",
+  "command": "git show HEAD:nonce_allocator.py > nonce_allocator.py && python3 -m unittest -v",
+  "exit_code": 1,
+  "elapsed_ms": 164,
+  "stdout_stderr_tail": "ImportError: cannot import name 'reserve_nonce_range' from 'nonce_allocator'\nRan 1 test in 0.000s\nFAILED (errors=1)",
+  "eval_pass": false,
+  "criteria": {
+    "baseline_fails_new_eval": true,
+    "eval_detects_removed_implementation": true
+  },
+  "artifacts": ["nonce_allocator.py", "test_nonce_allocator.py"]
+}
