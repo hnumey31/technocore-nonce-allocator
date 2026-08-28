@@ -1,0 +1,14 @@
+{
+  "run": 1,
+  "phase": "tdd-red",
+  "command": "python3 -m unittest -v",
+  "exit_code": 1,
+  "elapsed_ms": 500,
+  "stdout_stderr_tail": "ImportError: cannot import name 'reserve_nonce_range' from 'nonce_allocator'\nRan 1 test in 0.000s\nFAILED (errors=1)",
+  "eval_pass": false,
+  "criteria": {
+    "expected_failure_observed": true,
+    "failure_reason_is_missing_feature": true
+  },
+  "artifacts": ["test_nonce_allocator.py"]
+}
