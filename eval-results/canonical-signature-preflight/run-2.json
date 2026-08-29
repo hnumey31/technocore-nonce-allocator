@@ -1,0 +1,14 @@
+{
+  "run": 2,
+  "command": "mv signature_encoding.py /tmp/signature_encoding.py.negative-snapshot; python3 -m unittest -v test_signature_encoding.py; restore snapshot",
+  "exit_code": 1,
+  "duration_seconds": 0.1851312,
+  "stdout_tail": "ImportError: Failed to import test module: test_signature_encoding; ModuleNotFoundError: No module named 'signature_encoding'; FAILED (errors=1)",
+  "eval": {
+    "reproducibility": "NOT APPLICABLE: mutation run",
+    "demonstrability": "PASS: focused eval depends on production module",
+    "negative_test": "PASS: removing the implementation failed for the expected missing-feature reason",
+    "user_spec_match": "PENDING live commit and CI"
+  },
+  "artifacts": ["/tmp/canonical-negative.log"]
+}

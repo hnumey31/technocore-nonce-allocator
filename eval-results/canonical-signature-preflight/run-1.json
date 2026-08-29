@@ -1,0 +1,14 @@
+{
+  "run": 1,
+  "command": "python3 -m unittest -v && python3 -m unittest -v",
+  "exit_code": 0,
+  "duration_seconds": 1.9700799,
+  "stdout_tail": "Ran 6 tests in 0.711s - OK; repeated: Ran 6 tests in 0.735s - OK",
+  "eval": {
+    "reproducibility": "PASS: two clean full-suite runs returned the same 6 tests and exit 0",
+    "demonstrability": "PASS: canonical fixture, all 15 same-bytes aliases, and CLI accept/refuse behavior passed",
+    "negative_test": "PENDING",
+    "user_spec_match": "PENDING live commit and CI"
+  },
+  "artifacts": ["/tmp/canonical-pass1.log", "/tmp/canonical-pass2.log"]
+}

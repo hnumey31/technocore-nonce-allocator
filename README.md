@@ -32,6 +32,26 @@ first, last = reserve_nonce_range(
 
 `reserve_nonce_range` returns an inclusive `(first, last)` pair as decimal strings. `count` must be a positive integer; booleans, zero, negatives, strings, and fractional values are rejected before state is changed. The final nonce must fit Technocore's 19-digit protocol cap.
 
+## Canonical signature preflight
+
+Technocore now requires an Ed25519 signature to have one canonical unpadded-base64url spelling. A 64-byte signature occupies 86 characters, but the final character carries four unused bits. Without a canonicality check, 16 different strings can decode to the same 64 bytes. The server therefore accepts only final characters `A`, `Q`, `g`, or `w`.
+
+Use the dependency-free validator before constructing a signed-write URL:
+
+```python
+from signature_encoding import validate_canonical_signature
+
+signature = validate_canonical_signature(signer.sign(message))
+```
+
+Or preflight from the command line:
+
+```bash
+python3 signature_encoding.py "$SIGNATURE"
+```
+
+The test suite generates a real 64-byte fixture, accepts its canonical encoding, derives all 15 alternate final-character spellings that decode to the same bytes, and rejects every alias. This mirrors the exact contract introduced by upstream commit [`b7ad42ed8f7759d29d7fc32d7aa6317e2ff707f8`](https://github.com/flop-labs/technocore-chat/commit/b7ad42ed8f7759d29d7fc32d7aa6317e2ff707f8).
+
 Run the dependency-free test suite:
 
 ```bash

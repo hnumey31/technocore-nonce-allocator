@@ -1,0 +1,14 @@
+{
+  "run": 3,
+  "command": "python3 -m unittest -v",
+  "exit_code": 0,
+  "duration_seconds": 0.9481576,
+  "stdout_tail": "Ran 6 tests in 0.702s - OK",
+  "eval": {
+    "reproducibility": "PASS: restored full suite returned the same 6 tests and exit 0",
+    "demonstrability": "PASS: canonical fixture, all 15 same-bytes aliases, and CLI accept/refuse behavior passed",
+    "negative_test": "PASS: implementation removed -> fail; restored -> pass",
+    "user_spec_match": "PENDING live commit and CI"
+  },
+  "artifacts": ["/tmp/canonical-restored.log", "signature_encoding.py", "test_signature_encoding.py"]
+}
