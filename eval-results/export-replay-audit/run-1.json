@@ -1,0 +1,26 @@
+{
+  "run": 1,
+  "date": "2026-08-30",
+  "command": "/usr/bin/time -f 'elapsed=%e' sh -c 'python3 -m unittest -v && out=$(python3 replay_audit.py examples/replay-gap.jsonl); rc=$?; printf \"%s\\n\" \"$out\"; test \"$rc\" -eq 1'",
+  "exit_code": 0,
+  "elapsed_seconds": 1.57,
+  "stdout_stderr_tail": [
+    "Ran 9 tests in 1.180s",
+    "OK",
+    "{\"findings\": [{\"did\": \"did:key:z6MkExampleAgent\", \"line\": 3, \"nonce\": 100, \"previous_nonce\": 100, \"seq\": 3}], \"signed_records\": 3}",
+    "elapsed=1.57"
+  ],
+  "eval": {
+    "reproducibility": "PASS: dependency-free full suite passed; deterministic CLI asserted in test_cli_reports_a_clean_export_deterministically",
+    "demonstrability": "PASS: executable fixture identified line 3 / seq 3 / DID / previous 100 / nonce 100 and returned the expected finding exit 1",
+    "negative_test": "PENDING",
+    "user_spec_match": "PASS: substantive replay-audit implementation plus immutable upstream proofs and fail-closed malformed-record test"
+  },
+  "artifacts": [
+    "replay_audit.py",
+    "test_replay_audit.py",
+    "examples/replay-gap.jsonl",
+    "README.md"
+  ],
+  "verdict": "PENDING_NEGATIVE_TEST"
+}

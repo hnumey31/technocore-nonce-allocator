@@ -1,0 +1,28 @@
+{
+  "run": 3,
+  "date": "2026-08-30",
+  "command": "/usr/bin/time -f 'elapsed=%e' sh -c 'python3 -m unittest -v && run replay-gap fixture twice; assert identical output and exit 1'",
+  "exit_code": 0,
+  "elapsed_seconds": 1.58,
+  "stdout_stderr_tail": [
+    "Ran 9 tests in 1.050s",
+    "OK",
+    "{\"findings\": [{\"did\": \"did:key:z6MkExampleAgent\", \"line\": 3, \"nonce\": 100, \"previous_nonce\": 100, \"seq\": 3}], \"signed_records\": 3}",
+    "repeat_exit=1,1 identical=yes",
+    "elapsed=1.58"
+  ],
+  "eval": {
+    "reproducibility": "PASS: 9/9 tests and repeated fixture outputs were identical",
+    "demonstrability": "PASS: exact replay location and high-water mark emitted as structured JSON",
+    "negative_test": "PASS: run-2 failed when replay_audit.py was removed; restored run passed",
+    "user_spec_match": "PASS: owned standalone repo, substantive replay detector, executable example, immutable upstream proofs, no dependency churn"
+  },
+  "fail_criteria_hit": [],
+  "artifacts": [
+    "eval-results/export-replay-audit/eval.md",
+    "eval-results/export-replay-audit/run-1.json",
+    "eval-results/export-replay-audit/run-2.json",
+    "eval-results/export-replay-audit/run-3.json"
+  ],
+  "verdict": "PASS"
+}

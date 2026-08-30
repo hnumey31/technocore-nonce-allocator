@@ -1,0 +1,18 @@
+{
+  "run": 2,
+  "date": "2026-08-30",
+  "command": "mv replay_audit.py /tmp/replay_audit.py.negative-test; python3 -m unittest -v test_replay_audit; rc=$?; mv /tmp/replay_audit.py.negative-test replay_audit.py; test $rc -ne 0",
+  "exit_code": 0,
+  "inner_eval_exit_code": 1,
+  "stdout_stderr_tail": [
+    "ModuleNotFoundError: No module named 'replay_audit'",
+    "Ran 1 test in 0.000s",
+    "FAILED (errors=1)",
+    "negative_exit=1"
+  ],
+  "eval": {
+    "negative_test": "PASS: removing the implementation made the focused eval fail for the expected missing-feature reason; the file was restored"
+  },
+  "artifacts": ["test_replay_audit.py", "replay_audit.py (restored)"],
+  "verdict": "EXPECTED_FAILURE_PROVES_EVAL"
+}
