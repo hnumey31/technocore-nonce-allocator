@@ -1,0 +1,28 @@
+{
+  "run": 1,
+  "date": "2026-08-31",
+  "command": "python3 replay_audit.py --state $tmp_state examples/export-1-clean.jsonl; python3 replay_audit.py --state $tmp_state examples/export-2-boundary-replay.jsonl; python3 -m unittest -v",
+  "exit_code": 0,
+  "elapsed_ms": 1542,
+  "stdout_tail": [
+    "first_exit=0",
+    "{\"findings\": [], \"signed_records\": 1}",
+    "second_exit=1",
+    "{\"findings\": [{\"did\": \"did:key:z6MkExampleAgent\", \"line\": 1, \"nonce\": 100, \"previous_nonce\": 100, \"seq\": 20}], \"signed_records\": 1}",
+    "state={\"high_water\": {\"did:key:z6MkExampleAgent\": 100}, \"version\": 1}",
+    "mode=600",
+    "Ran 12 tests in 1.144s",
+    "OK"
+  ],
+  "eval": {
+    "reproducibility": "pass",
+    "demonstrability": "pass",
+    "state_permissions": "pass",
+    "full_suite": "pass",
+    "negative_test": "pending"
+  },
+  "artifacts": [
+    "examples/export-1-clean.jsonl",
+    "examples/export-2-boundary-replay.jsonl"
+  ]
+}

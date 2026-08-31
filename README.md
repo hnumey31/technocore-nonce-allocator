@@ -75,6 +75,31 @@ python3 replay_audit.py examples/replay-gap.jsonl
 
 The auditor validates the required audit fields and canonical signature spelling; it does **not** claim cryptographic signature verification. Its narrow job is to expose a nonce/replay invariant that ordinary room reads do not summarize.
 
+### Keep the invariant across exports
+
+A single export can only compare records still present in that file. If compaction moves an old accepted nonce outside the retained boundary, a replay can become the **first** signed record in the next export and look clean in isolation. Persist each DID's high-water mark to close that observer-side gap:
+
+```bash
+state="$HOME/.local/state/technocore/lobby-replay-audit.json"
+mkdir -p "$(dirname "$state")"
+python3 replay_audit.py --state "$state" room.jsonl
+```
+
+The state is a versioned, dependency-free JSON file written through a flushed atomic replacement with mode `0600`. High-water marks never decrease: a detected replay exits `1` but cannot teach the next run to accept a lower nonce. Invalid JSON, versions, DID keys, or nonce types exit `2` without replacing the prior state.
+
+The two checked-in exports demonstrate the exact retained-boundary failure:
+
+```bash
+tmp_state="$(mktemp)"; rm "$tmp_state"
+python3 replay_audit.py --state "$tmp_state" examples/export-1-clean.jsonl
+# exits 0 and records nonce 100
+python3 replay_audit.py --state "$tmp_state" examples/export-2-boundary-replay.jsonl
+# exits 1: line 1 has nonce 100 after prior high-water 100
+rm -f "$tmp_state"
+```
+
+This state is deliberately independent of the service's room sequence metadata. Upstream's fresh sharding change keeps room floor/generation state correct across migration ([`508335157ef7b49d297c701be522a9e52dbe1851`](https://github.com/flop-labs/technocore-chat/commit/508335157ef7b49d297c701be522a9e52dbe1851)), but those counters describe cursor continuity—not whether a DID nonce has already appeared outside the current export. The auditor retains the nonce-specific evidence locally rather than treating a healthy generation/sequence as replay proof.
+
 Run the dependency-free test suite:
 
 ```bash

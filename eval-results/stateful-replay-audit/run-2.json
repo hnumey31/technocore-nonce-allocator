@@ -1,0 +1,18 @@
+{
+  "run": 2,
+  "date": "2026-08-31",
+  "command": "git checkout HEAD -- replay_audit.py && python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_prior_high_water_catches_replay_at_first_exported_line",
+  "exit_code": 1,
+  "elapsed_ms": 0,
+  "stdout_tail": [
+    "ImportError: cannot import name 'audit_export_state' from 'replay_audit'",
+    "Ran 1 test in 0.000s",
+    "FAILED (errors=1)"
+  ],
+  "eval": {
+    "negative_test": "pass: baseline without the implementation fails the focused cross-export test for the expected missing API"
+  },
+  "artifacts": [
+    "/tmp/stateful-run2-negative.out"
+  ]
+}
