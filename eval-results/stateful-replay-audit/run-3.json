@@ -1,0 +1,29 @@
+{
+  "run": 3,
+  "date": "2026-08-31",
+  "command": "run two-export example twice from fresh state; cmp outputs; python3 -m unittest -v",
+  "exit_code": 0,
+  "elapsed_ms": 1953,
+  "stdout_tail": [
+    "deterministic=yes",
+    "{\"findings\": [], \"signed_records\": 1}",
+    "{\"findings\": [{\"did\": \"did:key:z6MkExampleAgent\", \"line\": 1, \"nonce\": 100, \"previous_nonce\": 100, \"seq\": 20}], \"signed_records\": 1}",
+    "replay_exit=1",
+    "Ran 12 tests in 1.192s",
+    "OK"
+  ],
+  "eval": {
+    "reproducibility": "pass: byte-identical output from two fresh runs",
+    "demonstrability": "pass: retained-boundary replay reported at line 1",
+    "negative_test": "pass: run 2 failed without implementation; run 3 passed after restore",
+    "user_spec_match": "pass: substantive nonce/replay implementation, negative tests, executable example, and immutable upstream proof",
+    "fail_criteria": []
+  },
+  "artifacts": [
+    "eval-results/stateful-replay-audit/eval.md",
+    "eval-results/stateful-replay-audit/run-1.json",
+    "eval-results/stateful-replay-audit/run-2.json",
+    "eval-results/stateful-replay-audit/run-3.json"
+  ],
+  "verdict": "PASS"
+}
