@@ -5,10 +5,135 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from replay_audit import audit_export, audit_export_state
+from replay_audit import analyze_replay_window, audit_export, audit_export_state
 
 
 class ReplayAuditTests(unittest.TestCase):
+    def test_window_explainer_marks_replay_inside_guard_as_refused(self):
+        records = [
+            {
+                "seq": 1,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+                "text": "original",
+            },
+            {
+                "seq": 2,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+                "text": "captured replay",
+            },
+        ]
+        lines = [json.dumps(record, separators=(",", ":")) + "\n" for record in records]
+
+        self.assertEqual(
+            analyze_replay_window(lines, guard_bytes=4096),
+            [
+                {
+                    "line": 2,
+                    "seq": 2,
+                    "did": "did:key:z6MkAlice",
+                    "nonce": 7,
+                    "historical_high_water": 7,
+                    "guard_nonce": 7,
+                    "service_outcome": "refused",
+                }
+            ],
+        )
+
+    def test_window_explainer_treats_iterable_items_as_logical_lines(self):
+        records = [
+            {
+                "seq": 1,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+            },
+            {"seq": 2, "from": "guest", "text": "filler"},
+            {
+                "seq": 3,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+            },
+        ]
+        lines_without_newlines = [json.dumps(record) for record in records]
+
+        explanations = analyze_replay_window(lines_without_newlines, guard_bytes=4096)
+
+        self.assertEqual(explanations[0]["guard_nonce"], 7)
+        self.assertEqual(explanations[0]["service_outcome"], "refused")
+
+    def test_window_explainer_marks_retained_reuse_outside_guard_as_accepted(self):
+        records = [
+            {
+                "seq": 1,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+                "text": "original",
+            },
+            {"seq": 2, "from": "guest", "text": "x" * 300},
+            {
+                "seq": 3,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+                "text": "captured replay",
+            },
+        ]
+        lines = [json.dumps(record, separators=(",", ":")) + "\n" for record in records]
+
+        explanations = analyze_replay_window(lines, guard_bytes=256)
+
+        self.assertEqual(explanations[0]["historical_high_water"], 7)
+        self.assertIsNone(explanations[0]["guard_nonce"])
+        self.assertEqual(explanations[0]["service_outcome"], "accepted")
+
+    def test_cli_explain_window_emits_machine_readable_service_outcome(self):
+        records = [
+            {
+                "seq": 1,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+            },
+            {"seq": 2, "from": "guest", "text": "x" * 300},
+            {
+                "seq": 3,
+                "from": "did:key:z6MkAlice",
+                "nonce": 7,
+                "sig": "A" * 86,
+            },
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            export = Path(directory) / "room.jsonl"
+            export.write_text(
+                "".join(json.dumps(record, separators=(",", ":")) + "\n" for record in records)
+            )
+            script = Path(__file__).with_name("replay_audit.py")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    script,
+                    "--explain-window",
+                    "--guard-bytes",
+                    "256",
+                    export,
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["guard_bytes"], 256)
+        self.assertEqual(payload["window_explanations"][0]["service_outcome"], "accepted")
+
     def test_prior_high_water_catches_replay_at_first_exported_line(self):
         lines = [
             json.dumps(

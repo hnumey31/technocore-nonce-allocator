@@ -1,0 +1,15 @@
+{
+  "run": 2,
+  "timestamp_wib": "2026-09-01T15:57:01+07:00",
+  "command": "save replay_audit.py; git checkout -- replay_audit.py; run three bounded-window tests; restore replay_audit.py",
+  "exit_code": 1,
+  "elapsed_seconds": 0.16,
+  "stdout_tail": "ImportError: cannot import name 'analyze_replay_window' from 'replay_audit'; Ran 3 tests; FAILED (errors=3)",
+  "eval": {
+    "negative_test": "pass: baseline implementation cannot satisfy or even expose bounded-window behavior",
+    "expected_failure": true,
+    "restoration": "implementation restored from snapshot"
+  },
+  "artifacts": ["/tmp/bounded-negative.log"],
+  "pass": true
+}
