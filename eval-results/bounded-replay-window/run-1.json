@@ -1,0 +1,22 @@
+{
+  "run": 1,
+  "timestamp_wib": "2026-09-01T15:57:01+07:00",
+  "command": "python3 -m unittest -v && run bounded example twice with --explain-window --guard-bytes 256 && cmp outputs",
+  "exit_code": 0,
+  "elapsed_seconds": 1.80,
+  "stdout_tail": "Ran 15 tests in 1.628s; OK; run1_exit=1 run2_exit=1 byte_identical=true; service_outcome=accepted; guard_nonce=null",
+  "eval": {
+    "reproducibility": "pass: full suite green and example outputs byte-identical",
+    "demonstrability": "pass: focused tests prove refused inside and accepted outside guard",
+    "negative_test": "pending",
+    "user_spec_match": "pass: standalone hnumey31 repo; fresh upstream f03af147 boundary"
+  },
+  "artifacts": [
+    "examples/bounded-window-reuse.jsonl",
+    "/tmp/bounded-1.json",
+    "/tmp/bounded-2.json"
+  ],
+  "output_sha256": "bd92fc84f745633ee95da9f4fea326cca331ed15d3f30890af750799939ac895",
+  "pass": false,
+  "reason": "positive run complete; negative control not run yet"
+}

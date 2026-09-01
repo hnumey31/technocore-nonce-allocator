@@ -75,6 +75,32 @@ python3 replay_audit.py examples/replay-gap.jsonl
 
 The auditor validates the required audit fields and canonical signature spelling; it does **not** claim cryptographic signature verification. Its narrow job is to expose a nonce/replay invariant that ordinary room reads do not summarize.
 
+### Separate historical reuse from the live guard decision
+
+An offline audit and the live service answer different questions. The auditor's high-water mark asks, “has this DID used this nonce anywhere in the evidence I retained?” The service asks only whether the nonce exceeds that DID's **newest record in the trailing 1 MiB**. Consequently, a retained export can prove historical reuse even when the bounded service is designed to accept the write as fresh.
+
+Use the opt-in explainer to report both answers without changing the default output schema:
+
+```bash
+python3 replay_audit.py --explain-window room.jsonl
+```
+
+Each historical finding gains a matching `window_explanations` entry. `guard_nonce` is the newest same-DID nonce found in the complete JSONL lines inside the byte tail. `service_outcome` is `refused` only when the candidate nonce does not exceed that value; otherwise it is `accepted`. This is an offline reconstruction from the export, not proof of a live request or cryptographic signature verification.
+
+The checked-in compact example shrinks the window to make the boundary executable without a 1 MiB fixture:
+
+```bash
+python3 replay_audit.py --explain-window --guard-bytes 256 \
+  examples/bounded-window-reuse.jsonl
+# historical finding: nonce 7 was seen before
+# window explanation: guard_nonce=null, service_outcome="accepted"
+# exit status: 1 (historical reuse remains an audit finding)
+```
+
+`--guard-bytes` must be a positive integer and defaults to the live service's `1048576`. A non-default value is for reproducing or comparing window semantics; do not describe it as the production setting.
+
+This distinction tracks the trust boundary pinned by upstream's state-machine tests in [`f03af147ae5bdee3e14f2c220a50341836393f41`](https://github.com/flop-labs/technocore-chat/commit/f03af147ae5bdee3e14f2c220a50341836393f41): replay is refused while the original remains inside the readable/guarded tail, but the store deliberately forgets beyond that bounded window. A whole retained file is therefore evidence for an offline monotonic-nonce policy, not evidence that the live service promised permanent nonce uniqueness.
+
 ### Keep the invariant across exports
 
 A single export can only compare records still present in that file. If compaction moves an old accepted nonce outside the retained boundary, a replay can become the **first** signed record in the next export and look clean in isolation. Persist each DID's high-water mark to close that observer-side gap:

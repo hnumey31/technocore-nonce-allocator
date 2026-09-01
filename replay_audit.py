@@ -62,6 +62,73 @@ def audit_export(lines):
     return findings
 
 
+def _newest_guard_nonce(raw_history, did, guard_bytes):
+    """Return the newest nonce for ``did`` in the complete-line byte tail."""
+    cutoff = max(0, len(raw_history) - guard_bytes)
+    tail = raw_history[cutoff:]
+    lines = tail.split(b"\n")
+    if cutoff:
+        lines = lines[1:]
+    for raw in reversed(lines):
+        if not raw:
+            continue
+        try:
+            record = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        if record.get("from") == did and isinstance(record.get("nonce"), int):
+            return record["nonce"]
+    return None
+
+
+def analyze_replay_window(lines, guard_bytes=1 << 20):
+    """Explain whether historical nonce reuse is inside the service guard window."""
+    if isinstance(guard_bytes, bool) or not isinstance(guard_bytes, int) or guard_bytes <= 0:
+        raise ValueError("guard_bytes must be a positive integer")
+    high_water = {}
+    raw_history = b""
+    explanations = []
+    for line_number, line in enumerate(lines, 1):
+        record = _record(line, line_number)
+        encoded = line.encode("utf-8") if isinstance(line, str) else line
+        if not encoded.endswith(b"\n"):
+            encoded += b"\n"
+        if "sig" in record:
+            did = record["from"]
+            nonce = record["nonce"]
+            previous = high_water.get(did)
+            if previous is not None and nonce <= previous:
+                guard_nonce = _newest_guard_nonce(raw_history, did, guard_bytes)
+                explanations.append(
+                    {
+                        "line": line_number,
+                        "seq": record["seq"],
+                        "did": did,
+                        "nonce": nonce,
+                        "historical_high_water": previous,
+                        "guard_nonce": guard_nonce,
+                        "service_outcome": (
+                            "refused"
+                            if guard_nonce is not None and nonce <= guard_nonce
+                            else "accepted"
+                        ),
+                    }
+                )
+            high_water[did] = max(previous, nonce) if previous is not None else nonce
+        raw_history += encoded
+    return explanations
+
+
+def _positive_integer(value):
+    try:
+        parsed = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("must be a positive integer") from None
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
+
+
 def _load_state(path):
     if not os.path.exists(path):
         return {}
@@ -109,6 +176,17 @@ def main():
     parser.add_argument(
         "--state", help="persist per-DID nonce high-water marks across exports"
     )
+    parser.add_argument(
+        "--explain-window",
+        action="store_true",
+        help="explain whether each in-export reuse is inside the service guard window",
+    )
+    parser.add_argument(
+        "--guard-bytes",
+        type=_positive_integer,
+        default=1 << 20,
+        help="service replay-guard byte window used by --explain-window (default: 1048576)",
+    )
     parser.add_argument("export")
     args = parser.parse_args()
 
@@ -124,7 +202,11 @@ def main():
             _save_state(args.state, high_water)
     except ValueError as error:
         parser.error(str(error))
-    print(json.dumps({"findings": findings, "signed_records": signed_records}, sort_keys=True))
+    payload = {"findings": findings, "signed_records": signed_records}
+    if args.explain_window:
+        payload["guard_bytes"] = args.guard_bytes
+        payload["window_explanations"] = analyze_replay_window(lines, args.guard_bytes)
+    print(json.dumps(payload, sort_keys=True))
     raise SystemExit(1 if findings else 0)
 
 

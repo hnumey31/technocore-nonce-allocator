@@ -1,0 +1,21 @@
+{
+  "run": 3,
+  "timestamp_wib": "2026-09-01T15:57:01+07:00",
+  "command": "python3 -m unittest -v; python3 -m py_compile nonce_allocator.py replay_audit.py signature_encoding.py test_*.py; git diff --check",
+  "exit_code": 0,
+  "elapsed_seconds": 1.74,
+  "stdout_tail": "Ran 16 tests in 1.743s; OK; py_compile passed; git diff --check passed",
+  "eval": {
+    "reproducibility": "pass: dependency-free full suite green",
+    "demonstrability": "pass: exact guard nonce and accepted/refused outcomes asserted",
+    "negative_test": "pass: run-2 failed against baseline",
+    "user_spec_match": "pass: substantive executable replay-window explanation in owned non-fork repo"
+  },
+  "artifacts": [
+    "eval-results/bounded-replay-window/eval.md",
+    "eval-results/bounded-replay-window/run-1.json",
+    "eval-results/bounded-replay-window/run-2.json",
+    "examples/bounded-window-reuse.jsonl"
+  ],
+  "pass": true
+}
