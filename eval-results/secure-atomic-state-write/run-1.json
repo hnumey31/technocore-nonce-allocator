@@ -1,0 +1,14 @@
+{
+  "run": 1,
+  "phase": "RED baseline",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_predictable_temp_symlink_cannot_clobber_another_file",
+  "exit_code": 1,
+  "elapsed_seconds": 0.81,
+  "stdout_stderr_tail": "AssertionError: '{\"did:key:zA|lobby\": 1001}\\n' != 'do not overwrite\\n'\nRan 1 test in 0.318s\nFAILED (failures=1)",
+  "eval": {
+    "test_failed_for_expected_reason": true,
+    "sentinel_was_overwritten_by_predictable_temp_symlink": true,
+    "pass": false
+  },
+  "artifacts": ["test_nonce_allocator.py"]
+}

@@ -1,0 +1,15 @@
+{
+  "run": 3,
+  "phase": "negative-test implementation revert",
+  "command": "git checkout -- nonce_allocator.py; python3 -m unittest -v test_nonce_allocator.NonceTests.test_predictable_temp_symlink_cannot_clobber_another_file; restore nonce_allocator.py",
+  "exit_code": 1,
+  "elapsed_seconds": 0.494,
+  "stdout_stderr_tail": "AssertionError: sentinel contained nonce state instead of 'do not overwrite'\nRan 1 test in 0.130s\nFAILED (failures=1)",
+  "eval": {
+    "eval_failed_without_hardening": true,
+    "failure_was_expected_sentinel_clobber": true,
+    "secure_implementation_restored_sha256": "a6bcd1de3db2b3b5f16905dd606a73963aec6cf64b44a6846b5040ee39bc30d7",
+    "pass": false
+  },
+  "artifacts": ["nonce_allocator.py", "test_nonce_allocator.py"]
+}

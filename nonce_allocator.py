@@ -3,6 +3,7 @@ import argparse
 import fcntl
 import json
 import os
+import tempfile
 import time
 from pathlib import Path
 
@@ -33,13 +34,19 @@ def reserve_nonce_range(state_path, did, room, count, now_ms=None):
             raise OverflowError("nonce exceeds Technocore's 19-digit cap")
         state[key] = last
 
-        temporary = target.with_name(target.name + ".tmp")
-        with temporary.open("w", encoding="utf-8") as output:
-            output.write(json.dumps(state, sort_keys=True) + "\n")
-            output.flush()
-            os.fsync(output.fileno())
-        os.chmod(temporary, 0o600)
-        os.replace(temporary, target)
+        descriptor, temporary = tempfile.mkstemp(
+            prefix=f".{target.name}.", dir=target.parent
+        )
+        try:
+            os.fchmod(descriptor, 0o600)
+            with os.fdopen(descriptor, "w", encoding="utf-8") as output:
+                output.write(json.dumps(state, sort_keys=True) + "\n")
+                output.flush()
+                os.fsync(output.fileno())
+            os.replace(temporary, target)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
 
     return str(first), str(last)
 
