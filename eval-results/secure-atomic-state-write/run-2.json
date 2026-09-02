@@ -1,0 +1,19 @@
+{
+  "run": 2,
+  "phase": "GREEN implementation",
+  "command": "python3 -m unittest -v <target>; python3 -m unittest -v <target>; python3 -m unittest -v",
+  "exit_code": 0,
+  "elapsed_seconds": 4.483,
+  "stdout_stderr_tail": "Targeted symlink test: OK (2/2 deterministic runs)\nRan 17 tests in 2.741s\nOK",
+  "eval": {
+    "sentinel_unchanged": true,
+    "state_regular_valid_json_mode_0600": true,
+    "temporary_files_cleaned": true,
+    "full_suite_passed": true,
+    "pass": true
+  },
+  "artifacts": [
+    "nonce_allocator.py",
+    "test_nonce_allocator.py"
+  ]
+}

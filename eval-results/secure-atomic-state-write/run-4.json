@@ -1,0 +1,24 @@
+{
+  "run": 4,
+  "phase": "restored final verification",
+  "command": "python3 -m unittest -v; git diff --check",
+  "exit_code": 0,
+  "elapsed_seconds": 3.728,
+  "stdout_stderr_tail": "Ran 17 tests in 3.306s\nOK\ngit diff --check: clean",
+  "eval": {
+    "reproducible_target_runs": "2/2 passed",
+    "real_filesystem_symlink_attack_blocked": true,
+    "negative_test_failed_on_baseline": true,
+    "restored_full_suite": "17/17 passed",
+    "diff_check_clean": true,
+    "pass": true
+  },
+  "artifacts": [
+    "eval-results/secure-atomic-state-write/eval.md",
+    "eval-results/secure-atomic-state-write/run-1.json",
+    "eval-results/secure-atomic-state-write/run-2.json",
+    "eval-results/secure-atomic-state-write/run-3.json",
+    "nonce_allocator.py",
+    "test_nonce_allocator.py"
+  ]
+}
