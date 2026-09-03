@@ -1,0 +1,15 @@
+{
+  "run": 2,
+  "phase": "GREEN",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_lock_symlink_is_rejected_without_touching_its_target && python3 -m unittest -v && python3 -m unittest -v",
+  "exit_code": 0,
+  "duration_ms": 5035,
+  "stdout_stderr_tail": "Specific regression: Ran 1 test, OK. Full suite run 1: Ran 18 tests, OK. Full suite run 2: Ran 18 tests, OK.",
+  "eval_pass": true,
+  "criteria": {
+    "symlink_target_unchanged": true,
+    "full_suite_passes": true,
+    "deterministic_two_runs": true
+  },
+  "artifacts": ["nonce_allocator.py", "test_nonce_allocator.py"]
+}

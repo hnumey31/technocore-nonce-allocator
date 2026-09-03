@@ -19,8 +19,10 @@ def reserve_nonce_range(state_path, did, room, count, now_ms=None):
     target.parent.mkdir(parents=True, exist_ok=True)
     lock_path = target.with_name(target.name + ".lock")
 
-    with lock_path.open("a", encoding="utf-8") as lock_file:
-        os.chmod(lock_path, 0o600)
+    lock_flags = os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW
+    lock_descriptor = os.open(lock_path, lock_flags, 0o600)
+    with os.fdopen(lock_descriptor, "a", encoding="utf-8") as lock_file:
+        os.fchmod(lock_file.fileno(), 0o600)
         fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
 
         state = json.loads(target.read_text()) if target.exists() else {}
