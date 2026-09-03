@@ -1,0 +1,20 @@
+{
+  "run": 4,
+  "phase": "REMOTE_VERIFICATION",
+  "command": "gh api user; gh api repos/hnumey31/technocore-nonce-allocator/commits/fix/reject-lock-symlinks; gh api repos/hnumey31/technocore-nonce-allocator/contents/nonce_allocator.py?ref=fix/reject-lock-symlinks",
+  "exit_code": 0,
+  "duration_ms": null,
+  "stdout_stderr_tail": "login=hnumey31; remote commit=6b8f11f7192da479cf77102dc4de03801db68881; nonce_allocator.py blob=71e3e1cb218884bb65cceceea6446f34cfc1c357; fork=false; PR #7 checks passed",
+  "eval_pass": true,
+  "criteria": {
+    "authenticated_identity_is_hnumey31": true,
+    "repository_is_standalone": true,
+    "remote_commit_matches_local": true,
+    "remote_hardened_file_exists": true,
+    "github_actions_pass": true
+  },
+  "artifacts": [
+    "https://github.com/hnumey31/technocore-nonce-allocator/commit/6b8f11f7192da479cf77102dc4de03801db68881",
+    "https://github.com/hnumey31/technocore-nonce-allocator/pull/7"
+  ]
+}

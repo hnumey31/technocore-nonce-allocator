@@ -18,7 +18,7 @@
 
 4. **User-spec match**
    - [x] Change is substantive nonce-safety/security hardening in the standalone `hnumey31/technocore-nonce-allocator` repository.
-   - [ ] Commit is pushed and its file/commit artifact is verified via the GitHub API as `hnumey31`.
+   - [x] Commit is pushed and its file/commit artifact is verified via the GitHub API as `hnumey31`.
 
 ## Fail criteria (ANY = no-go)
 
