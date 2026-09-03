@@ -1,0 +1,22 @@
+{
+  "run": 3,
+  "phase": "NEGATIVE_TEST_AND_REAPPLY",
+  "command": "restore baseline nonce_allocator.py; run focused test; restore hardened nonce_allocator.py; run focused test and full suite",
+  "exit_code": 0,
+  "duration_ms": null,
+  "stdout_stderr_tail": "Baseline production code: focused test exit 1 (expected). Reapplied hardening: focused test exit 0. Full suite: Ran 18 tests in 1.988s, OK.",
+  "eval_pass": true,
+  "criteria": {
+    "baseline_fails_regression": true,
+    "reapplied_change_passes_regression": true,
+    "reapplied_change_passes_full_suite": true,
+    "eval_is_sensitive_to_change": true
+  },
+  "artifacts": [
+    "nonce_allocator.py",
+    "test_nonce_allocator.py",
+    "eval-results/reject-lock-symlinks/run-1.json",
+    "eval-results/reject-lock-symlinks/run-2.json",
+    "eval-results/reject-lock-symlinks/run-3.json"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "run": 1,
+  "phase": "RED",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_lock_symlink_is_rejected_without_touching_its_target",
+  "exit_code": 1,
+  "duration_ms": 426,
+  "stdout_stderr_tail": "AssertionError: False is not true : a lock-file symlink must be rejected; Ran 1 test; FAILED (failures=1)",
+  "eval_pass": false,
+  "criteria": {
+    "regression_test_fails_on_baseline": true,
+    "failure_is_expected_missing_hardening": true
+  },
+  "artifacts": ["test_nonce_allocator.py", "eval-results/reject-lock-symlinks/eval.md"]
+}

@@ -6,6 +6,26 @@ from nonce_allocator import next_nonce, reserve_nonce_range
 
 
 class NonceTests(unittest.TestCase):
+    def test_lock_symlink_is_rejected_without_touching_its_target(self):
+        with tempfile.TemporaryDirectory() as d:
+            directory = Path(d)
+            path = directory / "state.json"
+            sentinel = directory / "sentinel.txt"
+            sentinel.write_text("do not chmod or lock me\n")
+            sentinel.chmod(0o640)
+            path.with_name(path.name + ".lock").symlink_to(sentinel)
+
+            rejected = False
+            try:
+                reserve_nonce_range(path, "did:key:zA", "lobby", 1, 1000)
+            except OSError:
+                rejected = True
+
+            self.assertTrue(rejected, "a lock-file symlink must be rejected")
+            self.assertEqual(sentinel.read_text(), "do not chmod or lock me\n")
+            self.assertEqual(sentinel.stat().st_mode & 0o777, 0o640)
+            self.assertFalse(path.exists())
+
     def test_predictable_temp_symlink_cannot_clobber_another_file(self):
         with tempfile.TemporaryDirectory() as d:
             directory = Path(d)
