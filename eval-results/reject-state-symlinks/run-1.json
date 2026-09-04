@@ -1,0 +1,16 @@
+{
+  "run": 1,
+  "phase": "RED / baseline negative test",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_state_symlink_is_rejected_without_reading_or_replacing_it",
+  "exit_code": 1,
+  "elapsed_ms": 2336,
+  "stdout_stderr_tail": "AssertionError: OSError not raised\nRan 1 test in 0.372s\nFAILED (failures=1)",
+  "eval": {
+    "baseline_rejects_state_symlink": false,
+    "negative_test_proven": true
+  },
+  "artifacts": [
+    "test_nonce_allocator.py",
+    "eval-results/reject-state-symlinks/eval.md"
+  ]
+}
