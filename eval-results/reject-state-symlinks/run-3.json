@@ -1,0 +1,25 @@
+{
+  "run": 3,
+  "phase": "GREEN / restored hardening",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_state_symlink_is_rejected_without_reading_or_replacing_it && python3 -m unittest discover -v && git diff --check",
+  "exit_code": 0,
+  "elapsed_ms": 2264,
+  "stdout_stderr_tail": "Focused test: Ran 1 test - OK\nFull suite: Ran 19 tests in 1.802s - OK\ngit diff --check: clean",
+  "eval": {
+    "clean_checkout_command_documented": true,
+    "focused_test_deterministic_two_runs": true,
+    "symlink_rejected": true,
+    "target_content_and_mode_unchanged": true,
+    "symlink_not_replaced": true,
+    "negative_test_proven": true,
+    "full_regression_suite_passed": true,
+    "github_artifact_verified": false
+  },
+  "artifacts": [
+    "nonce_allocator.py",
+    "test_nonce_allocator.py",
+    "eval-results/reject-state-symlinks/eval.md",
+    "eval-results/reject-state-symlinks/run-1.json",
+    "eval-results/reject-state-symlinks/run-2.json"
+  ]
+}

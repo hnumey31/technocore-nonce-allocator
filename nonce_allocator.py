@@ -25,7 +25,13 @@ def reserve_nonce_range(state_path, did, room, count, now_ms=None):
         os.fchmod(lock_file.fileno(), 0o600)
         fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
 
-        state = json.loads(target.read_text()) if target.exists() else {}
+        try:
+            state_descriptor = os.open(target, os.O_RDONLY | os.O_NOFOLLOW)
+        except FileNotFoundError:
+            state = {}
+        else:
+            with os.fdopen(state_descriptor, encoding="utf-8") as state_file:
+                state = json.load(state_file)
         if not isinstance(state, dict):
             raise ValueError("nonce state must be a JSON object")
         key = f"{did}|{room}"

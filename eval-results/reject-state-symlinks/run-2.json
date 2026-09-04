@@ -1,0 +1,16 @@
+{
+  "run": 2,
+  "phase": "negative verification with hardening removed",
+  "command": "python3 -m unittest -v test_nonce_allocator.NonceTests.test_state_symlink_is_rejected_without_reading_or_replacing_it",
+  "exit_code": 1,
+  "elapsed_ms": 337,
+  "stdout_stderr_tail": "AssertionError: OSError not raised\nRan 1 test in 0.149s\nFAILED (failures=1)",
+  "eval": {
+    "test_fails_without_hardening": true,
+    "negative_test_proven": true
+  },
+  "artifacts": [
+    "nonce_allocator.py",
+    "test_nonce_allocator.py"
+  ]
+}

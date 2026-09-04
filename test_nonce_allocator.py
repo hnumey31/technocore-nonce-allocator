@@ -6,6 +6,23 @@ from nonce_allocator import next_nonce, reserve_nonce_range
 
 
 class NonceTests(unittest.TestCase):
+    def test_state_symlink_is_rejected_without_reading_or_replacing_it(self):
+        with tempfile.TemporaryDirectory() as d:
+            directory = Path(d)
+            path = directory / "state.json"
+            sentinel = directory / "attacker-state.json"
+            original = '{"did:key:zA|lobby": 7}\n'
+            sentinel.write_text(original)
+            sentinel.chmod(0o640)
+            path.symlink_to(sentinel)
+
+            with self.assertRaises(OSError):
+                reserve_nonce_range(path, "did:key:zA", "lobby", 1, 1000)
+
+            self.assertTrue(path.is_symlink())
+            self.assertEqual(sentinel.read_text(), original)
+            self.assertEqual(sentinel.stat().st_mode & 0o777, 0o640)
+
     def test_lock_symlink_is_rejected_without_touching_its_target(self):
         with tempfile.TemporaryDirectory() as d:
             directory = Path(d)
