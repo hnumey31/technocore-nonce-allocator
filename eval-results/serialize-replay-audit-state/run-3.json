@@ -1,0 +1,29 @@
+{
+  "phase": "NEGATIVE_MUTATION",
+  "mutation": "replace state lock context with nullcontext",
+  "command": "python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_stateful_cli_waits_then_reloads_state_under_one_lock",
+  "exit_code": 1,
+  "duration_seconds": 0.898,
+  "stdout_stderr_tail": [
+    "test_stateful_cli_waits_then_reloads_state_under_one_lock (test_replay_audit.ReplayAuditTests.test_stateful_cli_waits_then_reloads_state_under_one_lock) ... FAIL",
+    "",
+    "======================================================================",
+    "FAIL: test_stateful_cli_waits_then_reloads_state_under_one_lock (test_replay_audit.ReplayAuditTests.test_stateful_cli_waits_then_reloads_state_under_one_lock)",
+    "----------------------------------------------------------------------",
+    "Traceback (most recent call last):",
+    "  File \"/mnt/d/hermes-ops/tg2/work/technocore-nonce-allocator/technocore-nonce-allocator/test_replay_audit.py\", line 47, in test_stateful_cli_waits_then_reloads_state_under_one_lock",
+    "    with self.assertRaises(subprocess.TimeoutExpired):",
+    "AssertionError: TimeoutExpired not raised",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 0.384s",
+    "",
+    "FAILED (failures=1)"
+  ],
+  "eval": {
+    "test_fails_when_critical_lock_is_removed": true
+  },
+  "artifacts": [
+    "test_replay_audit.py"
+  ]
+}

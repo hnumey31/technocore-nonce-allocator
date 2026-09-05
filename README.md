@@ -111,7 +111,9 @@ mkdir -p "$(dirname "$state")"
 python3 replay_audit.py --state "$state" room.jsonl
 ```
 
-The state is a versioned, dependency-free JSON file written through a flushed atomic replacement with mode `0600`. High-water marks never decrease: a detected replay exits `1` but cannot teach the next run to accept a lower nonce. Invalid JSON, versions, DID keys, or nonce types exit `2` without replacing the prior state.
+The state is a versioned, dependency-free JSON file written through a flushed atomic replacement with mode `0600`. A per-state advisory lock serializes the complete load/audit/save transaction, so concurrent auditors cannot both read a stale high-water mark and overwrite one another's evidence. The adjacent `<state>.lock` file also uses mode `0600`; all processes updating the state must use this CLI (or honor the same lock).
+
+High-water marks never decrease: a detected replay exits `1` but cannot teach the next run to accept a lower nonce. Invalid JSON, versions, DID keys, or nonce types exit `2` without replacing the prior state.
 
 The two checked-in exports demonstrate the exact retained-boundary failure:
 
