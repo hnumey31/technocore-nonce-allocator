@@ -1,0 +1,47 @@
+{
+  "phase": "GREEN",
+  "command": "focused test twice; then python3 -m unittest -v",
+  "exit_code": 0,
+  "duration_seconds": 6.623,
+  "stdout_stderr_tail": [
+    "Ran 1 test in 0.643s",
+    "",
+    "OK",
+    "test_lock_symlink_is_rejected_without_touching_its_target (test_nonce_allocator.NonceTests.test_lock_symlink_is_rejected_without_touching_its_target) ... ok",
+    "test_monotonic_per_did_and_room (test_nonce_allocator.NonceTests.test_monotonic_per_did_and_room) ... ok",
+    "test_predictable_temp_symlink_cannot_clobber_another_file (test_nonce_allocator.NonceTests.test_predictable_temp_symlink_cannot_clobber_another_file) ... ok",
+    "test_protocol_cap (test_nonce_allocator.NonceTests.test_protocol_cap) ... ok",
+    "test_rejects_invalid_range_size_without_creating_state (test_nonce_allocator.NonceTests.test_rejects_invalid_range_size_without_creating_state) ... ok",
+    "test_reserves_contiguous_range_before_next_single_nonce (test_nonce_allocator.NonceTests.test_reserves_contiguous_range_before_next_single_nonce) ... ok",
+    "test_state_symlink_is_rejected_without_reading_or_replacing_it (test_nonce_allocator.NonceTests.test_state_symlink_is_rejected_without_reading_or_replacing_it) ... ok",
+    "test_cli_explain_window_emits_machine_readable_service_outcome (test_replay_audit.ReplayAuditTests.test_cli_explain_window_emits_machine_readable_service_outcome) ... ok",
+    "test_cli_fails_closed_with_line_number_for_malformed_signed_record (test_replay_audit.ReplayAuditTests.test_cli_fails_closed_with_line_number_for_malformed_signed_record) ... ok",
+    "test_cli_persists_high_water_and_catches_next_exports_first_line (test_replay_audit.ReplayAuditTests.test_cli_persists_high_water_and_catches_next_exports_first_line) ... ok",
+    "test_cli_rejects_malformed_state_without_overwriting_it (test_replay_audit.ReplayAuditTests.test_cli_rejects_malformed_state_without_overwriting_it) ... ok",
+    "test_cli_reports_a_clean_export_deterministically (test_replay_audit.ReplayAuditTests.test_cli_reports_a_clean_export_deterministically) ... ok",
+    "test_prior_high_water_catches_replay_at_first_exported_line (test_replay_audit.ReplayAuditTests.test_prior_high_water_catches_replay_at_first_exported_line) ... ok",
+    "test_reports_non_increasing_nonce_for_the_same_did (test_replay_audit.ReplayAuditTests.test_reports_non_increasing_nonce_for_the_same_did) ... ok",
+    "test_stateful_cli_waits_then_reloads_state_under_one_lock (test_replay_audit.ReplayAuditTests.test_stateful_cli_waits_then_reloads_state_under_one_lock) ... ok",
+    "test_window_explainer_marks_replay_inside_guard_as_refused (test_replay_audit.ReplayAuditTests.test_window_explainer_marks_replay_inside_guard_as_refused) ... ok",
+    "test_window_explainer_marks_retained_reuse_outside_guard_as_accepted (test_replay_audit.ReplayAuditTests.test_window_explainer_marks_retained_reuse_outside_guard_as_accepted) ... ok",
+    "test_window_explainer_treats_iterable_items_as_logical_lines (test_replay_audit.ReplayAuditTests.test_window_explainer_treats_iterable_items_as_logical_lines) ... ok",
+    "test_accepts_one_spelling_and_rejects_fifteen_same_bytes_aliases (test_signature_encoding.SignatureEncodingTests.test_accepts_one_spelling_and_rejects_fifteen_same_bytes_aliases) ... ok",
+    "test_cli_distinguishes_canonical_signature_from_same_bytes_alias (test_signature_encoding.SignatureEncodingTests.test_cli_distinguishes_canonical_signature_from_same_bytes_alias) ... ok",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 20 tests in 3.788s",
+    "",
+    "OK",
+    "",
+    "RESULT_CODES focused_1=0 focused_2=0 full=0"
+  ],
+  "eval": {
+    "focused_test_deterministic_two_runs": true,
+    "full_suite_passes": true,
+    "real_cli_waits_and_reloads_advanced_state": true
+  },
+  "artifacts": [
+    "replay_audit.py",
+    "test_replay_audit.py"
+  ]
+}

@@ -1,3 +1,4 @@
+import fcntl
 import json
 import subprocess
 import sys
@@ -9,6 +10,62 @@ from replay_audit import analyze_replay_window, audit_export, audit_export_state
 
 
 class ReplayAuditTests(unittest.TestCase):
+    def test_stateful_cli_waits_then_reloads_state_under_one_lock(self):
+        script = Path(__file__).with_name("replay_audit.py")
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            export = directory / "room.jsonl"
+            state = directory / "audit-state.json"
+            lock_path = state.with_name(state.name + ".lock")
+            export.write_text(
+                json.dumps(
+                    {
+                        "seq": 20,
+                        "from": "did:key:z6MkAlice",
+                        "nonce": 100,
+                        "sig": "A" * 86,
+                    }
+                )
+                + "\n"
+            )
+            state.write_text(
+                json.dumps(
+                    {"high_water": {"did:key:z6MkAlice": 50}, "version": 1}
+                )
+                + "\n"
+            )
+
+            with lock_path.open("a+") as lock:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+                process = subprocess.Popen(
+                    [sys.executable, script, "--state", state, export],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+                try:
+                    with self.assertRaises(subprocess.TimeoutExpired):
+                        process.wait(timeout=0.5)
+                    state.write_text(
+                        json.dumps(
+                            {
+                                "high_water": {"did:key:z6MkAlice": 100},
+                                "version": 1,
+                            }
+                        )
+                        + "\n"
+                    )
+                finally:
+                    fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+            stdout, stderr = process.communicate(timeout=5)
+            saved = json.loads(state.read_text())
+
+        self.assertEqual(stderr, "")
+        self.assertEqual(process.returncode, 1)
+        self.assertEqual(json.loads(stdout)["findings"][0]["previous_nonce"], 100)
+        self.assertEqual(saved["high_water"]["did:key:z6MkAlice"], 100)
+
     def test_window_explainer_marks_replay_inside_guard_as_refused(self):
         records = [
             {

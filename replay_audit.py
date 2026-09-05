@@ -2,6 +2,8 @@
 """Audit a Technocore room export for non-increasing signed-write nonces."""
 
 import argparse
+import contextlib
+import fcntl
 import json
 import os
 import tempfile
@@ -152,6 +154,18 @@ def _load_state(path):
     return high_water
 
 
+@contextlib.contextmanager
+def _state_lock(path):
+    lock_path = os.fspath(path) + ".lock"
+    descriptor = os.open(
+        lock_path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600
+    )
+    with os.fdopen(descriptor, "a", encoding="utf-8") as lock:
+        os.fchmod(lock.fileno(), 0o600)
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        yield
+
+
 def _save_state(path, high_water):
     directory = os.path.dirname(os.path.abspath(path))
     descriptor, temporary = tempfile.mkstemp(prefix=".replay-audit-", dir=directory)
@@ -192,16 +206,20 @@ def main():
 
     with open(args.export, encoding="utf-8") as source:
         lines = source.readlines()
-    try:
-        prior_high_water = _load_state(args.state) if args.state else {}
-        findings, high_water = audit_export_state(lines, prior_high_water)
-        signed_records = sum(
-            1 for line_number, line in enumerate(lines, 1) if "sig" in _record(line, line_number)
-        )
-        if args.state:
-            _save_state(args.state, high_water)
-    except ValueError as error:
-        parser.error(str(error))
+    lock = _state_lock(args.state) if args.state else contextlib.nullcontext()
+    with lock:
+        try:
+            prior_high_water = _load_state(args.state) if args.state else {}
+            findings, high_water = audit_export_state(lines, prior_high_water)
+            signed_records = sum(
+                1
+                for line_number, line in enumerate(lines, 1)
+                if "sig" in _record(line, line_number)
+            )
+            if args.state:
+                _save_state(args.state, high_water)
+        except ValueError as error:
+            parser.error(str(error))
     payload = {"findings": findings, "signed_records": signed_records}
     if args.explain_window:
         payload["guard_bytes"] = args.guard_bytes
