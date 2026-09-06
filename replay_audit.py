@@ -3,6 +3,7 @@
 
 import argparse
 import contextlib
+import errno
 import fcntl
 import json
 import os
@@ -132,10 +133,16 @@ def _positive_integer(value):
 
 
 def _load_state(path):
-    if not os.path.exists(path):
-        return {}
     try:
-        with open(path, encoding="utf-8") as source:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    except FileNotFoundError:
+        return {}
+    except OSError as error:
+        if error.errno == errno.ELOOP:
+            raise ValueError("state symlink is not allowed") from None
+        raise ValueError(f"invalid audit state: {error}") from None
+    try:
+        with os.fdopen(descriptor, encoding="utf-8") as source:
             state = json.load(source)
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"invalid audit state: {error}") from None

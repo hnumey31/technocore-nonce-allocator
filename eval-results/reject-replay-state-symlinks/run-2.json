@@ -1,0 +1,19 @@
+{
+  "run": 2,
+  "phase": "negative-test revert and restore",
+  "command": "git checkout -- replay_audit.py; python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_cli_rejects_state_symlink_without_reading_or_replacing_target; git apply /tmp/reject-replay-state-symlink-fix.patch; python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_cli_rejects_state_symlink_without_reading_or_replacing_target",
+  "exit_code": 0,
+  "elapsed_negative_ms": 835,
+  "stdout_stderr_tail": "reverted fix: AssertionError: 0 != 2; FAILED (failures=1)\nrestored fix: Ran 1 test; OK",
+  "eval": {
+    "reverted_fix_exit_code": 1,
+    "reverted_fix_failed_as_expected": true,
+    "restored_fix_exit_code": 0,
+    "restored_fix_passed": true,
+    "eval_is_sensitive_to_change": true
+  },
+  "artifacts": [
+    "replay_audit.py",
+    "test_replay_audit.py"
+  ]
+}
