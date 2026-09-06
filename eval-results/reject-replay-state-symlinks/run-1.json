@@ -1,0 +1,17 @@
+{
+  "run": 1,
+  "phase": "RED / baseline negative test",
+  "command": "python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_cli_rejects_state_symlink_without_reading_or_replacing_target",
+  "exit_code": 1,
+  "elapsed_ms": 1643,
+  "stdout_stderr_tail": "AssertionError: 0 != 2\nRan 1 test in 0.806s\nFAILED (failures=1)",
+  "eval": {
+    "expected_failure": true,
+    "test_failed_for_expected_reason": true,
+    "baseline_followed_state_symlink": true
+  },
+  "artifacts": [
+    "eval-results/reject-replay-state-symlinks/eval.md",
+    "test_replay_audit.py"
+  ]
+}

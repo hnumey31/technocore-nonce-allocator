@@ -284,6 +284,44 @@ class ReplayAuditTests(unittest.TestCase):
         )
         self.assertEqual(mode, 0o600)
 
+    def test_cli_rejects_state_symlink_without_reading_or_replacing_target(self):
+        script = Path(__file__).with_name("replay_audit.py")
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            export = directory / "room.jsonl"
+            state = directory / "audit-state.json"
+            target = directory / "protected-state.json"
+            export.write_text(
+                json.dumps(
+                    {
+                        "seq": 2,
+                        "from": "did:key:z6MkAlice",
+                        "nonce": 101,
+                        "sig": "A" * 86,
+                    }
+                )
+                + "\n"
+            )
+            original = json.dumps(
+                {"high_water": {"did:key:z6MkAlice": 100}, "version": 1}
+            ) + "\n"
+            target.write_text(original)
+            target.chmod(0o640)
+            state.symlink_to(target)
+
+            result = subprocess.run(
+                [sys.executable, script, "--state", state, export],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("state symlink is not allowed", result.stderr)
+            self.assertTrue(state.is_symlink())
+            self.assertEqual(target.read_text(), original)
+            self.assertEqual(target.stat().st_mode & 0o777, 0o640)
+
     def test_cli_rejects_malformed_state_without_overwriting_it(self):
         script = Path(__file__).with_name("replay_audit.py")
         malformed = '{"high_water":{"did:key:z6MkAlice":"100"},"version":1}\n'

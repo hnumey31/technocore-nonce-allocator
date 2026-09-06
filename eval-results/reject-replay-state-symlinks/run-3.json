@@ -1,0 +1,23 @@
+{
+  "run": 3,
+  "phase": "GREEN / local verification",
+  "command": "python3 -m unittest -v test_replay_audit.ReplayAuditTests.test_cli_rejects_state_symlink_without_reading_or_replacing_target (twice); python3 -m unittest -v",
+  "exit_code": 0,
+  "elapsed_ms": 5882,
+  "stdout_stderr_tail": "focused run 1: Ran 1 test; OK\nfocused run 2: Ran 1 test; OK\nfull suite: Ran 21 tests in 3.724s; OK\nRESULT_CODES focused_1=0 focused_2=0 full_suite=0",
+  "eval": {
+    "focused_run_1": "pass",
+    "focused_run_2": "pass",
+    "deterministic": true,
+    "full_suite": "21/21 pass",
+    "errors_or_warnings": false,
+    "local_verdict": "PASS"
+  },
+  "artifacts": [
+    "eval-results/reject-replay-state-symlinks/eval.md",
+    "eval-results/reject-replay-state-symlinks/run-1.json",
+    "eval-results/reject-replay-state-symlinks/run-2.json",
+    "replay_audit.py",
+    "test_replay_audit.py"
+  ]
+}
